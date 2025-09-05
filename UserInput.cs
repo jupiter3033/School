@@ -1,10 +1,14 @@
 ﻿public class UserInput
 {
-    public static int AsInt32()
+    public static int AsInt32(string requestText = null)
     {
         AsInt32Start:
         try
         {
+            if(requestText == null)
+            {
+                Console.WriteLine(requestText);
+            }
             string userInput = Console.ReadLine();
             int pharsedInput = Int32.Parse(userInput);
             return pharsedInput;
@@ -15,8 +19,12 @@
             goto AsInt32Start;
         }
     }
-    public static string AsString()
+    public static string AsString(string requestText = null)
     {
+        if (requestText == null)
+        {
+            Console.WriteLine(requestText);
+        }
         return Console.ReadLine();
     }
     public static float AsFloat()

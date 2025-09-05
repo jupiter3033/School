@@ -1,15 +1,13 @@
 ﻿using System;
 namespace SportOrganizer
 {
-	public class Player
+    public class Player
 	{
-		public Player()
-		{
-			string name;
-			string surname;
-			int age;
-			float kdr;
-		}
+
+        public string name;
+        public string surname;
+        public int age;
+        public float kdr;
 	}
 }
 
