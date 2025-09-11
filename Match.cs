@@ -3,16 +3,13 @@ namespace SportOrganizer
 {
 	public class Match
 	{
-		public Match()
-		{
-			int teamOnePoints;
-			int teamTwoPoints;
-			Team teamOne;
-			Team teamTwo;
-			DateTime startOfMatch;
-			float matchTime;
-			string teamWon;
-		}
+			public int teamOnePoints;
+			public int teamTwoPoints;
+			public int teamOneindex;
+			public int teamTwoindex;
+			public DateTime startOfMatch;
+			public float matchTime;
+			public string teamWon;
 	}
 }
 

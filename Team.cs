@@ -3,15 +3,13 @@ namespace SportOrganizer
 {
 	public class Team
 	{
-		public Team()
-		{
-			List<Player> players;
-			string teamName;
-			int gamesWon;
-			int gamesLost;
-			int gamesTied;
-			string capitanName;
-		}
+			public List<int> playersIndexes = new List<int>();
+			public string teamName;
+			public int gamesWon;
+			public int gamesLost;
+			public int gamesTied;
+			public string captainName;
+
 	}
 }
 
