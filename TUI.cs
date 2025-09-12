@@ -18,6 +18,7 @@ namespace SportOrganizer
             Console.WriteLine("│   9.wczytaj               │");
             Console.WriteLine("│   10.zakończ              │");
             Console.WriteLine("│   11.show all             │");
+            Console.WriteLine("│   12.clear screen         │");
             Console.WriteLine("│                           │");
             Console.WriteLine("└───────────────────────────┘");
             Console.WriteLine("Wybierz opcje:");

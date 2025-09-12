@@ -1,13 +1,16 @@
-﻿namespace SportOrganizer;
+﻿using System.Diagnostics;
+
+namespace SportOrganizer;
 
 class Program
 {
-    static List<Player> playerList = new List<Player>();
-    static List<Match> matchList = new List<Match>();
-    static List<Team> teamList = new List<Team>();
+    public static List<Player> playerList = new List<Player>();
+    public static List<Match> matchList = new List<Match>();
+    public static List<Team> teamList = new List<Team>();
     static void Main(string[] args)
     {
         StartOfMain:
+        GC.Collect(); //Becouse i can B)
         TUI.PrintMainMenu();
         int UserChoice = UserInput.AsInt32();
         switch(UserChoice)
@@ -69,7 +72,7 @@ class Program
                     }
                     catch
                     {
-                        Console.WriteLine("Coś poszło nie tak... czy ten gracz istnieje?");
+                        Console.WriteLine("Coś poszło nie tak... czy ten gracz istnieje? (czy to poprawny index?)");
                     }
                     
                 }
@@ -81,20 +84,52 @@ class Program
                 teamList.Add(team);
                 goto StartOfMain;
             case 6: // create match
-                /*int teamOnePoints;
-			int teamTwoPoints;
-			Team teamOne;
-			Team teamTwo;
-			DateTime startOfMatch;
-			float matchTime;
-			string teamWon;*/
-            
+                Match match = new Match();
+                
+                try
+                {
+
+                    match.teamOneindex = UserInput.AsInt32("Index Drużuny jeden: ");
+                    Team readTest = teamList[match.teamOneindex]; //will crash if team does not exist and thats the point. :P
+                    match.teamTwoindex = UserInput.AsInt32("Index Drużuny dwa: ");
+                    readTest = teamList[match.teamTwoindex]; // same here
+                    match.teamOnePoints = UserInput.AsInt32("Punkty Drużuny jeden: ");
+                    match.teamTwoPoints = UserInput.AsInt32("Punkty Drużuny dwa: ");
+                    match.startOfMatch = UserInput.AsDateTime("Godzina rozpoczęcia meczu :");
+                    match.matchTime = UserInput.AsFloat("Czas trwania meczu: ");
+                    match.teamWon = UserInput.AsString("Drużyna Która wygrała (Może być nikt): ");
+                    readTest = null; // to be eaten by GC.
+                }
+                catch
+                {
+                    Console.WriteLine("Coś poszło nie tak... czy ten gracz istnieje? (czy to poprawny index?)");
+                }
+                matchList.Add(match);
+
+                /*public int teamOnePoints;
+			public int teamTwoPoints;
+			public int teamOneindex;
+			public int teamTwoindex;
+			public DateTime startOfMatch;
+			public float matchTime;
+			public string teamWon;
+	}*/
+
+                goto StartOfMain;
+            case 8:
+                thesaveandload.thesave(); // WHY DO THEY NEED THE 'the' PART WTF KAPER
+                goto StartOfMain;
+            case 9:
+                thesaveandload.theload();
                 goto StartOfMain;
             case 10: // exit
                 break;
             case 11: // show all
                 PrintAllPlayers(playerList);
                 PrintAllTeams(teamList);
+                goto StartOfMain;
+            case 12: // clear
+                Console.Clear();
                 goto StartOfMain;
         }
     }
@@ -119,8 +154,8 @@ class Program
             int i = 1;
             foreach (Team _team in _teamList)
             {
-                Console.WriteLine(i + ".\n     imię drużyny: " + _team.teamName + "\n     liczba gier wygranych: " + _team.gamesWon + "\n     liczba gier przegranych: " + _team.gamesLost + "\n     Liczba gier zakończonych remisem: " + _team.gamesTied);
-                Console.WriteLine("Gracze: ");
+                Console.WriteLine(i + ".\n     imię drużyny: " + _team.teamName + "\n     liczba gier wygranych: " + _team.gamesWon + "\n     liczba gier przegranych: " + _team.gamesLost + "\n     Liczba gier zakończonych remisem: " + _team.gamesTied+"\n     Imie kapitana: "+_team.captainName);
+                Console.WriteLine("     Gracze: ");
                 foreach(int playerIndex in _team.playersIndexes)
                 {
                     Console.WriteLine("     "+playerIndex+". ");
