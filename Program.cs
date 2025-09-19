@@ -11,7 +11,7 @@ class Program
     static void Main(string[] args)
     {
         StartOfMain:
-        GC.Collect();
+        GC.Collect(); //Becouse i can
         TUI.PrintMainMenu(); // print main menu
         int UserChoice = UserInput.AsInt32(); // get user input
 
@@ -36,17 +36,20 @@ class Program
                     int indexToRemove = UserInput.AsInt32("Podaj index do usunięcia: ");
                     try
                     {
-                        playerList.RemoveAt(indexToRemove-1); // remove by index
-                    catch(Exception ex)
+                        playerList.RemoveAt(indexToRemove - 1);
+                    }// remove by index
+                    catch (Exception ex)
                     {
-                        Console.WriteLine("Coś poszło nie tak... : "+ex); // error message if index is invalid
+                        Console.WriteLine("Coś poszło nie tak... : " + ex); // error message if index is invalid
                     }
                 }
                 else
                     Console.WriteLine("Nie ma co usunąć!");
                 
                 goto StartOfMain;
-
+            case 3:
+                PrintAllMatches(matchList);
+                goto StartOfMain;
             case 4: // add team
                 Team team = new Team();
                 int i = 0;
@@ -87,22 +90,34 @@ class Program
                 team.captainName = UserInput.AsString("Podaj imię kapitana: ");
                 teamList.Add(team); // add team to list
                 goto StartOfMain;
+            case 5:// remove team
+                try
+                {
+                    int teamIndex = UserInput.AsInt32("Podaj index drużyny do usunięcia > ");
+                    Team readTest = teamList[teamIndex-1];
+                    teamList.RemoveAt(teamIndex-1);
+                }
+                catch
+                {
+                    Console.WriteLine("Coś poszło nie tak... czy ta drużyna istnieje? (czy to poprawny index?)");
+                }
 
+                goto StartOfMain;
             case 6: // create match
                 Match match = new Match();
                 
                 try
                 {
                     match.teamOneindex = UserInput.AsInt32("Index Drużuny jeden: ");
-                    Team readTest = teamList[match.teamOneindex]; // check if team exists
+                    Team readTest = teamList[match.teamOneindex-1]; // check if team exists
                     match.teamTwoindex = UserInput.AsInt32("Index Drużuny dwa: ");
-                    readTest = teamList[match.teamTwoindex]; // check if second team exists
+                    readTest = teamList[match.teamTwoindex-1]; // check if second team exists
                     match.teamOnePoints = UserInput.AsInt32("Punkty Drużuny jeden: ");
                     match.teamTwoPoints = UserInput.AsInt32("Punkty Drużuny dwa: ");
                     match.startOfMatch = UserInput.AsDateTime("Godzina rozpoczęcia meczu :");
                     match.matchTime = UserInput.AsFloat("Czas trwania meczu: ");
                     match.teamWon = UserInput.AsString("Drużyna Która wygrała (Może być nikt): ");
-                    readTest = null;
+                    readTest = null; // to be eaten by GC
                 }
                 catch
                 {
@@ -111,6 +126,54 @@ class Program
                 matchList.Add(match); // add match to list
                 goto StartOfMain;
 
+            case 7: // edit match
+                try
+                {
+                    PrintAllMatches(matchList);
+                    int index = UserInput.AsInt32("Index Drużyny > ");
+                    Match _match = matchList[index-1]; // index read test will crash if incorrect, thats the point.
+                    Console.WriteLine("Jaką wartość zmienić?\n" +
+                        "1.Punkty drużyny jeden > " + _match.teamOnePoints+"\n"+
+                        "2.Punkty drużyny dwa > " + _match.teamTwoPoints + "\n" +
+                        "3.Index duzyny jeden > " + _match.teamTwoindex + "\n" +
+                        "4.Index drużyny dwa > " + _match.teamTwoindex + "\n" +
+                        "5.Data rozpoczęcia > " + _match.startOfMatch + "\n" +
+                        "6.Czas trwania meczu > " + _match.matchTime + "\n" +
+                        "7.Zwyciężca > "+_match.teamWon);
+                    Case7UserInput:
+                    int input = UserInput.AsInt32("> ");
+                    switch(input)
+                    {
+                        default:
+                            goto Case7UserInput;
+                        case 1:
+                            matchList[index - 1].teamOnePoints = UserInput.AsInt32("Podaj nową wartość > ");
+                            break;
+                        case 2:
+                            matchList[index - 1].teamTwoPoints = UserInput.AsInt32("Podaj nową wartość > ");
+                            break;
+                        case 3:
+                            matchList[index - 1].teamOneindex = UserInput.AsInt32("Podaj nową wartość > ");
+                            break;
+                        case 4:
+                            matchList[index - 1].teamTwoindex = UserInput.AsInt32("Podaj nową wartość > ");
+                            break;
+                        case 5:
+                            matchList[index - 1].startOfMatch = UserInput.AsDateTime("Podaj nową wartość > ");
+                            break;
+                        case 6:
+                            matchList[index - 1].matchTime = UserInput.AsFloat("Podaj nową wartość > ");
+                            break;
+                        case 7:
+                            matchList[index - 1].teamWon = UserInput.AsString("Podaj nową wartość > ");
+                            break;
+                    }
+                }
+                catch
+                {
+                    Console.WriteLine("Coś poszło nie tak... czy ta drużyna istnieje? (czy to poprawny index?)");
+                }
+                goto StartOfMain;
             case 8: // save data
                 thesaveandload.thesave();
                 goto StartOfMain;
@@ -122,9 +185,10 @@ class Program
             case 10: // exit program
                 break;
 
-            case 11: // show all players and teams
+            case 11: // show all players, teams and matches
                 PrintAllPlayers(playerList);
                 PrintAllTeams(teamList);
+                PrintAllMatches(matchList);
                 goto StartOfMain;
 
             case 12: // clear console
@@ -163,6 +227,26 @@ class Program
                     Console.WriteLine("     imię gracza: " + playerList[playerIndex].name + "\n     nazwisko gracza: " + playerList[playerIndex].surname);
                 }
                 i++;
+            }
+        }
+    }
+    static void PrintAllMatches(List<Match> _matchList)
+    {
+        if (_matchList.Count != 0)
+        {
+            Console.WriteLine("Mecze: ");
+            int i = 1;
+            foreach (Match _match in _matchList)
+            {
+                try { 
+                    Console.WriteLine("     "+i + ". "+_match.teamOnePoints +" - " + teamList[_match.teamOneindex-1].teamName + " vs "+ teamList[_match.teamTwoindex-1].teamName+" - "+ _match.teamTwoPoints+" , wygrała drużyna: "+_match.teamWon+
+                        " ,Data rozpoczęcia : "+_match.startOfMatch+ ", czas meczu : "+_match.matchTime+"s.");
+                    i++;
+                }
+                catch (ArgumentOutOfRangeException ex)
+                {
+                    Console.WriteLine(i + ". Błędny index drużyny został podany lub drużyna nie istneje.");
+                }
             }
         }
     }

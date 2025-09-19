@@ -41,6 +41,10 @@ namespace SportOrganizer
         }
 		public static void theload()
 		{
+            Program.matchList.Clear();
+            Program.playerList.Clear();
+            Program.teamList.Clear();
+
             string loadpath = UserInput.AsString("podaj nazwe pliku do załadowania: ");
 
             using(StreamReader Reader = new StreamReader(loadpath))
@@ -73,7 +77,16 @@ namespace SportOrganizer
                         case "Match":
                             if (!(line == "[Match]")) // ignore if this is a label line
                             {
-                                Console.WriteLine(line); // WIP.
+                                string[] splitString = line.Split('|');
+                                Match match = new Match(); 
+                                match.teamOnePoints = int.Parse(splitString[0]);
+                                match.teamTwoPoints = int.Parse(splitString[1]);
+                                match.teamOneindex = int.Parse(splitString[2]);
+                                match.teamTwoindex = int.Parse(splitString[3]);
+                                match.startOfMatch = DateTime.Parse(splitString[4]);
+                                match.matchTime = float.Parse(splitString[5]);
+                                match.teamWon = splitString[6];
+                                Program.matchList.Add(match); // Ooooooo the story of undertale
                             }
                             break;
                         case "Team":
