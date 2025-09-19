@@ -223,7 +223,7 @@ class Program
                 Console.WriteLine("     Gracze: ");
                 foreach(int playerIndex in _team.playersIndexes)
                 {
-                    Console.WriteLine("     "+playerIndex+". ");
+                    Console.WriteLine("     "+(playerIndex+1)+". ");
                     Console.WriteLine("     imię gracza: " + playerList[playerIndex].name + "\n     nazwisko gracza: " + playerList[playerIndex].surname);
                 }
                 i++;
